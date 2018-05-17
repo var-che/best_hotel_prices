@@ -1,13 +1,6 @@
-
-Content Script Cross-Domain XMLHttpRequest Example
+Chrome extension that adds the better prices
 =======
 
-Demonstrates making cross domain requests from a content script by putting Twitter trends on Google News.
-
-[Zipfile](http://developer.chrome.com/extensions/examples/howto/contentscript_xhr.zip)
-
-Content is licensed under the [Google BSD License](https://developers.google.com/open-source/licenses/bsd).
-
-Calls
+This is the working place work Chrome extension development that inserts prices from Ostrovok inserted into Booking.
 -----
 
