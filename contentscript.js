@@ -277,23 +277,54 @@ for (var i = 0; i < arr.length - 1; i++) {
     nRequest[i].onreadystatechange = function (oEvent) {
       if (nRequest[i].readyState === 4) {
         if (nRequest[i].status === 200) {
-          console.log(nRequest[i].responseText);
+        //   console.log(nRequest[i].responseText);
 
           // Print response as json
           res_as_json = JSON.parse(nRequest[i].responseText);
           
-          potential_hotel = res_as_json["result"]["hotels"]; // Object of a hotel
+          potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel
 
    
 
           if(potential_hotel){
-            // If its not undefined
+
+            // Make connection for specific hotel_id
+
+            (function(potential_hotel, title_element, title_text, auth){
+                hotels_id = potential_hotel["id"]; // hotels_id_stuff
+                URL = 'https://partner.ostrovok.ru/api/b2b/v2/hotel/list?data={"ids":["' +hotels_id+'"],"lang":"en"}';
+
+
+                nResult[i] = new XMLHttpRequest();
             
-                                    // list of hotels, span.sr-hotel__name , "Hotel centar balasevic"
-            return nResult[i]  =  [potential_hotel, title_element, title_text];
+                nResult[i].open("GET", URL, true);
+                // Headers - Authentification
+                nResult[i].setRequestHeader('Authorization', auth);
+                nResult[i].withCredentials = true;
+
+                nResult[i].onreadystatechange = function (oEvent) {
+                    if (nResult[i].readyState === 4) {
+                        if (nResult[i].status === 200) {
+
+                            res_to_json = JSON.parse(nResult[i].responseText);
+
+                            if (res_to_json) {
+                                
+                                result = res_to_json['result'][0]; // Object{amenities, city, low_rate}
+                                console.log(result)
+                            }
+
+                        }
+                    }
+                }
+
+                // console.log(hotels_id, 'from new context')
+
+                nResult[i].send(null);
+            })(potential_hotel,title_element, title_text, auth);
             
           }
-          //  alert(nRequest[i].responseText);
+
           console.log(title_element, title_text, i)
 
         } else {
@@ -306,3 +337,6 @@ for (var i = 0; i < arr.length - 1; i++) {
 }
 
 
+function crateDiv(){
+    
+}
