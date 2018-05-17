@@ -247,7 +247,7 @@ var auth = make_base_auth('1446','0eae4a4e-40d5-4de4-957c-670cb7904e2a');
 console.log(auth)
 
 
-var city_name = document.getElementsByClassName('sorth1')[0].innerText; 
+var city_name = document.getElementsByClassName('sr_header')[0].innerText; 
 city_name = city_name.substring(0, city_name.indexOf(':')); //Belgrade
 
 var e = document.getElementsByClassName('sr-hotel__name'); // elements that hold the hotel name
@@ -337,6 +337,3 @@ for (var i = 0; i < arr.length - 1; i++) {
 }
 
 
-function crateDiv(){
-    
-}
