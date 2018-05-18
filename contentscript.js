@@ -508,7 +508,7 @@ function drawTheDivContainer(html_index, the_object){
     /* This is the main wrapper that wrapps the whole ad */
     e = document.getElementsByClassName('sr-hotel__name')[html_index];
     main_wrapper = e.offsetParent.offsetParent.offsetParent.offsetParent;
-    // console.log(main_wrapper)
+    
 
     div = document.createElement('DIV');
     div.innerHTML = `<div class='--main-wrapper'>
