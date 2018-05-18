@@ -1,5 +1,58 @@
+var url_string = window.location.href;
+var newUrlString = url_string.replace(/;/g, '&');
+var url = new URL(newUrlString);
 
 
+var checkout_month = url.searchParams.get("checkout_month");
+var checkout_monthday = url.searchParams.get("checkout_monthday");
+var checkout_year = url.searchParams.get("checkout_year");
+
+checkout = checkout_year + '-' + checkout_month + '-' + checkout_monthday;
+////////
+
+var group_adults = url.searchParams.get("group_adults");
+var group_children = url.searchParams.get("group_children");
+var no_rooms = url.searchParams.get("no_rooms");
+
+var checkin_month = url.searchParams.get("checkin_month");
+var checkin_monthday = url.searchParams.get("checkin_monthday");
+var checkin_year = url.searchParams.get("checkin_year");
+
+checkin = checkin_year + '-' + checkin_month + '-' + checkin_monthday;
+//////////
+
+currency = document.querySelector('input[name="selected_currency"]').value;
+
+var data = {};
+////////
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+    
+}
+if(no_rooms!== null){
+    console.log(formatDate(checkin))
+    console.log(formatDate(checkout))
+    console.log(group_adults)
+    console.log(group_children)
+    console.log(no_rooms)
+
+    
+}
+
+
+// By this line of code, we should have Object that contains data that will be sent into API later
+
+
+
+/*  ----------------------------------  ---------------------------------- */
 
 var Base64 = {
  
@@ -256,6 +309,7 @@ var arr = [...e] // convert HTMLOBJECT into array
 
 var nRequest = [];
 var nResult = [];
+var nResult2 = []; // Is an array that holds the Index, HtmlTitleElement 
 for (var i = 0; i < arr.length - 1; i++) {
   
   title_element = arr[i]; // the title as a element
@@ -277,63 +331,220 @@ for (var i = 0; i < arr.length - 1; i++) {
     nRequest[i].onreadystatechange = function (oEvent) {
       if (nRequest[i].readyState === 4) {
         if (nRequest[i].status === 200) {
-        //   console.log(nRequest[i].responseText);
 
-          // Print response as json
           res_as_json = JSON.parse(nRequest[i].responseText);
           
-          potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel
-
-   
+          potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel   
 
           if(potential_hotel){
 
+            nResult2.push([i, potential_hotel])
+            console.log(nResult2)
+
             // Make connection for specific hotel_id
 
-            (function(potential_hotel, title_element, title_text, auth){
-                hotels_id = potential_hotel["id"]; // hotels_id_stuff
-                URL = 'https://partner.ostrovok.ru/api/b2b/v2/hotel/list?data={"ids":["' +hotels_id+'"],"lang":"en"}';
+            // (function(potential_hotel, title_element, title_text, auth){
+            //     hotels_id = potential_hotel["id"]; // hotels_id_stuff
+            //     // URL = 'https://partner.ostrovok.ru/api/b2b/v2/hotel/list?data={"ids":["' +hotels_id+'"],"lang":"en"}';
 
+            //     var params = JSON.stringify({"children": 0,"checkin":"2018-05-25","checkout":"2018-05-29","adults":2,"lang":"en","format":"json","currency":"usd"});
 
-                nResult[i] = new XMLHttpRequest();
+            //     URL2 = 'https://partner.ostrovok.ru/api/b2b/v2/hotelpage/' + hotels_id + '?data=' + params; 
+                               
+            //     // console.log(URL2, 'is the king now.')
+
+            //     // nResult[i] = new XMLHttpRequest();
             
-                nResult[i].open("GET", URL, true);
-                // Headers - Authentification
-                nResult[i].setRequestHeader('Authorization', auth);
-                nResult[i].withCredentials = true;
+                
+            //     // nResult[i].open("GET", URL2, true);
+            //     // // Headers - Authentification
+            //     // nResult[i].setRequestHeader('Authorization', auth);
+            //     // nResult[i].setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                
+            //     // nResult[i].withCredentials = true;
 
-                nResult[i].onreadystatechange = function (oEvent) {
-                    if (nResult[i].readyState === 4) {
-                        if (nResult[i].status === 200) {
+            //     // nResult[i].onreadystatechange = function (oEvent) {
+            //     //     if (nResult[i].readyState === 4) {
+            //     //         if (nResult[i].status === 200) {
 
-                            res_to_json = JSON.parse(nResult[i].responseText);
+            //     //             res_to_json = JSON.parse(nResult[i].responseText);
 
-                            if (res_to_json) {
+            //     //             if (res_to_json) {
                                 
-                                result = res_to_json['result'][0]; // Object{amenities, city, low_rate}
-                                console.log(result)
-                            }
+            //     //                 result = res_to_json['result'][0]; // Object{amenities, city, low_rate}
+            //     //                 console.log(result)
+            //     //             }
 
-                        }
-                    }
-                }
+            //     //         }
+            //     //     }
+            //     // }
 
-                // console.log(hotels_id, 'from new context')
-
-                nResult[i].send(null);
-            })(potential_hotel,title_element, title_text, auth);
+            //     // // console.log(hotels_id, 'from new context')
+            //     // console.log(params)
+            //     // nResult[i].send();
+            // })(potential_hotel,title_element, title_text, auth);
             
           }
 
-          console.log(title_element, title_text, i)
+        //   console.log(title_element, title_text, i)
 
         } else {
           console.log("Error", nRequest[i].statusText);
         }
       }
     };
+
     nRequest[i].send(null);
+
   })(i, title_element, title_text);
 }
 
+function processQ() {
 
+    nResult2.push = Array.prototype.push;
+    // ... this will be called on each .push
+    len = nResult2.length;
+    var refreshIntervalId = setInterval(fname, 1100);
+
+    function fname() {
+        if (nResult2.length !== len) {
+
+            
+            len = nResult2.length;
+
+        } else {
+            /* From here, i am sending starting and ending index of the list */
+
+            /* that means that I am sending another request to API to get the hotels prices */
+
+            console.log('This is the end', len, nResult2.length)
+            slicenRequest2Array(1, nResult2.length);
+            clearInterval(refreshIntervalId)
+        }
+
+    }
+}
+
+
+function slicenRequest2Array(start, end){
+    the_string = ''
+    /* Substracting 1, because lists starts from 0 */
+
+    start_of_list = start - 1;
+    end_of_list = end - 1;
+
+    for(start_of_list; start_of_list < end_of_list; start_of_list++){
+        // the_string = nResult2[start_of_list] + the_string
+        console.log(nResult2[start_of_list][1]['id'])
+        the_string = '"'+ nResult2[start_of_list][1]['id'] + '"' + the_string
+    }
+
+    
+    var res = the_string.replace(/\"\"/g, "\",\"");
+    
+
+    /* By this point, I have a string ready to be inserted into hotel/rates API, with a key "ids" */
+    /* "retenzija_apartment","boulevard_star_apartment","guest_house_vida","tas_hotel" */
+
+    makeSecondAPIcall(res);
+}
+
+last_array = []
+function makeSecondAPIcall(ids){
+
+    (function(ids){
+
+        URL = 'https://partner.ostrovok.ru/api/b2b/v2/hotel/rates?data={"ids":[' + ids + '],"checkin":"'+formatDate(checkin)+'","checkout":"'+formatDate(checkout)+'","adults":'+group_adults+',"children":'+group_children+',"lang":"en","format":"json","currency":"'+currency+'"}'
+
+        console.log(URL)
+        
+        let xml = new XMLHttpRequest();
+        //AUTH 
+        var auth = make_base_auth('1446', '0eae4a4e-40d5-4de4-957c-670cb7904e2a');
+
+        xml.open("GET", URL, true);
+        // Headers - Authentification
+        xml.setRequestHeader('Authorization', auth);
+        xml.withCredentials = true;
+
+
+        xml.onreadystatechange = function (oEvent){
+            if (xml.readyState === 4) {
+                if (xml.status === 200) {
+                    // console.log(xml, ids)
+
+                    result_to_json = JSON.parse(xml.response);
+
+                    console.log(result_to_json)
+                    logThePageConfiguration(result_to_json['debug']);
+                    logTheListOfElements(result_to_json['result']['hotels']);
+                }
+            }
+        }
+
+        xml.send(null);
+    })(ids);
+    
+}
+
+function logTheListOfElements(list_of_hotels_objects){
+    html_index_and_object = []
+
+    list_of_hotels_objects.forEach((elem)=>{
+        for(var i = 0; i < nResult2.length-1; i++){
+            if(elem['id'] === nResult2[i][1]['id']){
+                // html_index_and_object.push([nResult2[i][0], elem])
+                drawTheDivContainer(nResult2[i][0], elem);
+            }
+        }
+    });
+    // console.log(html_index_and_object);
+    
+}
+
+function drawTheDivContainer(html_index, the_object){
+
+    console.log('Creating div for ', html_index, the_object)
+    /* This is the main wrapper that wrapps the whole ad */
+    e = document.getElementsByClassName('sr-hotel__name')[html_index];
+    main_wrapper = e.offsetParent.offsetParent.offsetParent.offsetParent;
+    // console.log(main_wrapper)
+
+    div = document.createElement('DIV');
+    div.innerHTML = `<div class='--main-wrapper'>
+
+                     </div>`;
+    main_wrapper.appendChild(div);
+
+    /* add insides to hotel id */
+    p = document.createElement('P');
+    p.innerText = the_object['id'];
+    div.appendChild(p);
+
+    p = document.createElement('P');
+    p.innerText = the_object['rates'][0]['b2b_recommended_price'];
+    div.appendChild(p);
+
+    p = document.createElement('P');
+    p.innerText = currency;
+    div.appendChild(p);
+
+    // hotel_id = document.getElementById('--hotel-id');
+    // hotel_id.innerText = the_object['id'];
+}
+
+function logThePageConfiguration(thing){
+    console.log('--------------------------*****')
+    console.log('--------------------------*****')
+    console.log('---------CONFIG-----------*****')
+    console.log('--------------------------*****')
+    console.log('--------------------------*****')
+    console.log(thing)
+}
+
+nResult2.push = function () {
+    Array.prototype.push.apply(this, arguments);
+    processQ();
+};
+
+`https://partner.ostrovok.ru/api/b2b/v2/hotel/rates?data={"ids":["grand_hotel_nis","happy_star_club","niski_cvet"],"checkin":"2018-06-01","checkout":"2018-06-08","adults":2,"children":[0],"lang":"en","format":"json","currency":"USD"}`
