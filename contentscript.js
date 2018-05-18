@@ -307,96 +307,61 @@ var e = document.getElementsByClassName('sr-hotel__name'); // elements that hold
 
 var arr = [...e] // convert HTMLOBJECT into array
 
+console.log("The length of array is: ", arr.length)
+
 var nRequest = [];
 var nResult = [];
 var nResult2 = []; // Is an array that holds the Index, HtmlTitleElement 
 for (var i = 0; i < arr.length - 1; i++) {
-  
-  title_element = arr[i]; // the title as a element
-  title_text = title_element.innerText; // the title as a text
-  (function (i, title_element, title_text) {
 
-    URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + title_text + " " + city_name + '","format":"json","lang":"en"}';
+    title_element = arr[i]; // the title as a element
+    title_text = title_element.innerText; // the title as a text
+    (function (i, title_element, title_text) {
 
-    nRequest[i] = new XMLHttpRequest();
-    //AUTH 
-    var auth = make_base_auth('1446', '0eae4a4e-40d5-4de4-957c-670cb7904e2a');
+        URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + ' ' + encodeURIComponent(city_name) + '","format":"json","lang":"en"}';
 
-    nRequest[i].open("GET", URL, true);
-    // Headers - Authentification
-    nRequest[i].setRequestHeader('Authorization', auth);
-    nRequest[i].withCredentials = true;
+        console.log(URL)
+
+        nRequest[i] = new XMLHttpRequest();
+        //AUTH 
+        var auth = make_base_auth('1446', '0eae4a4e-40d5-4de4-957c-670cb7904e2a');
+
+        nRequest[i].open("GET", URL, true);
+        // Headers - Authentification
+        nRequest[i].setRequestHeader('Authorization', auth);
+        nRequest[i].withCredentials = true;
 
 
-    nRequest[i].onreadystatechange = function (oEvent) {
-      if (nRequest[i].readyState === 4) {
-        if (nRequest[i].status === 200) {
+        nRequest[i].onreadystatechange = function (oEvent) {
+            if (nRequest[i].readyState === 4) {
+                if (nRequest[i].status === 200) {
 
-          res_as_json = JSON.parse(nRequest[i].responseText);
-          
-          potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel   
+                    res_as_json = JSON.parse(nRequest[i].responseText);
 
-          if(potential_hotel){
 
-            nResult2.push([i, potential_hotel])
-            console.log(nResult2)
+                    /* NOTE NOTE NOTE there can be more then one return result per response
+                      for example, if i search "Hotel Slavonija London", there might be 3 of them as a response 
+                      and in this example below, I am getting only the first element in a return list        */
 
-            // Make connection for specific hotel_id
+                    potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel   
 
-            // (function(potential_hotel, title_element, title_text, auth){
-            //     hotels_id = potential_hotel["id"]; // hotels_id_stuff
-            //     // URL = 'https://partner.ostrovok.ru/api/b2b/v2/hotel/list?data={"ids":["' +hotels_id+'"],"lang":"en"}';
+                    if (potential_hotel) {
 
-            //     var params = JSON.stringify({"children": 0,"checkin":"2018-05-25","checkout":"2018-05-29","adults":2,"lang":"en","format":"json","currency":"usd"});
+                        nResult2.push([i, potential_hotel])
 
-            //     URL2 = 'https://partner.ostrovok.ru/api/b2b/v2/hotelpage/' + hotels_id + '?data=' + params; 
-                               
-            //     // console.log(URL2, 'is the king now.')
 
-            //     // nResult[i] = new XMLHttpRequest();
-            
-                
-            //     // nResult[i].open("GET", URL2, true);
-            //     // // Headers - Authentification
-            //     // nResult[i].setRequestHeader('Authorization', auth);
-            //     // nResult[i].setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                
-            //     // nResult[i].withCredentials = true;
+                    }
 
-            //     // nResult[i].onreadystatechange = function (oEvent) {
-            //     //     if (nResult[i].readyState === 4) {
-            //     //         if (nResult[i].status === 200) {
 
-            //     //             res_to_json = JSON.parse(nResult[i].responseText);
+                } else {
+                    console.log("Error", nRequest[i].statusText);
+                }
+            }
+        };
 
-            //     //             if (res_to_json) {
-                                
-            //     //                 result = res_to_json['result'][0]; // Object{amenities, city, low_rate}
-            //     //                 console.log(result)
-            //     //             }
+        nRequest[i].send(null);
 
-            //     //         }
-            //     //     }
-            //     // }
-
-            //     // // console.log(hotels_id, 'from new context')
-            //     // console.log(params)
-            //     // nResult[i].send();
-            // })(potential_hotel,title_element, title_text, auth);
-            
-          }
-
-        //   console.log(title_element, title_text, i)
-
-        } else {
-          console.log("Error", nRequest[i].statusText);
-        }
-      }
-    };
-
-    nRequest[i].send(null);
-
-  })(i, title_element, title_text);
+    })(i, title_element, title_text);
 }
 
 function processQ() {
@@ -404,7 +369,7 @@ function processQ() {
     nResult2.push = Array.prototype.push;
     // ... this will be called on each .push
     len = nResult2.length;
-    var refreshIntervalId = setInterval(fname, 1100);
+    var refreshIntervalId = setInterval(fname, 2000);
 
     function fname() {
         if (nResult2.length !== len) {
@@ -547,4 +512,4 @@ nResult2.push = function () {
     processQ();
 };
 
-`https://partner.ostrovok.ru/api/b2b/v2/hotel/rates?data={"ids":["grand_hotel_nis","happy_star_club","niski_cvet"],"checkin":"2018-06-01","checkout":"2018-06-08","adults":2,"children":[0],"lang":"en","format":"json","currency":"USD"}`
+// `https://partner.ostrovok.ru/api/b2b/v2/hotel/rates?data={"ids":["grand_hotel_nis","happy_star_club","niski_cvet"],"checkin":"2018-06-01","checkout":"2018-06-08","adults":2,"children":[0],"lang":"en","format":"json","currency":"USD"}`
