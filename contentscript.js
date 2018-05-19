@@ -50,7 +50,46 @@ if(no_rooms!== null){
 
 // By this line of code, we should have Object that contains data that will be sent into API later
 
+function similarity(s1, s2) {
+    var longer = s1;
+    var shorter = s2;
+    if (s1.length < s2.length) {
+      longer = s2;
+      shorter = s1;
+    }
+    var longerLength = longer.length;
+    if (longerLength == 0) {
+      return 1.0;
+    }
+    return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+  }
 
+  function editDistance(s1, s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    var costs = new Array();
+    for (var i = 0; i <= s1.length; i++) {
+      var lastValue = i;
+      for (var j = 0; j <= s2.length; j++) {
+        if (i == 0)
+          costs[j] = j;
+        else {
+          if (j > 0) {
+            var newValue = costs[j - 1];
+            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue),
+                costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0)
+        costs[s2.length] = lastValue;
+    }
+    return costs[s2.length];
+  }
 
 /*  ----------------------------------  ---------------------------------- */
 
@@ -317,8 +356,10 @@ for (var i = 0; i < arr.length - 1; i++) {
     title_element = arr[i]; // the title as a element
     title_text = title_element.innerText; // the title as a text
     (function (i, title_element, title_text) {
+        // URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + ' ' + encodeURIComponent(city_name) + '","format":"json","lang":"en"}';
 
-        URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + ' ' + encodeURIComponent(city_name) + '","format":"json","lang":"en"}';
+
+        URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + '","format":"json","lang":"en"}';
 
         console.log(URL)
 
@@ -343,13 +384,38 @@ for (var i = 0; i < arr.length - 1; i++) {
                       for example, if i search "Hotel Slavonija London", there might be 3 of them as a response 
                       and in this example below, I am getting only the first element in a return list        */
 
-                    potential_hotel = res_as_json["result"]["hotels"][0]; // Object of a hotel   
+                    potential_hotel = res_as_json["result"]["hotels"]; // Object of a hotel   
 
                     if (potential_hotel) {
 
-                        nResult2.push([i, potential_hotel])
+                        // nResult2.push([i, potential_hotel])  IMPOPRTANT DONT DELETE
 
 
+                        console.log(i, potential_hotel)
+                        // var counter = 0;
+
+                        var count_list = [0, 0];
+                        if(potential_hotel.length > 1) {
+                            
+                            potential_hotel.forEach((hotel_object,index)=>{
+                                similarity_check = similarity(title_text, hotel_object['name']);
+                                if(similarity_check !== 1){
+                                    if(count_list[0]<similarity_check){
+                                        
+                                        count_list[0] = similarity_check;
+                                        count_list[1] = index;
+                                    }
+                                    
+                                }
+
+                            })
+                            // console.log('Similarities ', similarity(title_text, potential_hotel[0]['name']) );
+                        }else if(potential_hotel.length === 1){
+                            console.log('There is only one item to compare. Must match.', potential_hotel[0])
+                        }else if(potential_hotel.length < 1){
+                            console.log("There is no hotel ID for this element.")
+                        }
+                        // console.log('The count_list is ', count_list, ' and the element is ', i)
                     }
 
 
@@ -512,4 +578,3 @@ nResult2.push = function () {
     processQ();
 };
 
-// `https://partner.ostrovok.ru/api/b2b/v2/hotel/rates?data={"ids":["grand_hotel_nis","happy_star_club","niski_cvet"],"checkin":"2018-06-01","checkout":"2018-06-08","adults":2,"children":[0],"lang":"en","format":"json","currency":"USD"}`
