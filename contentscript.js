@@ -384,15 +384,15 @@ for (var i = 0; i < arr.length - 1; i++) {
                       for example, if i search "Hotel Slavonija London", there might be 3 of them as a response 
                       and in this example below, I am getting only the first element in a return list        */
 
-                    potential_hotel = res_as_json["result"]["hotels"]; // Object of a hotel   
+                    potential_hotel = res_as_json["result"]["hotels"]; // Object of a hotel  
+                    // console.log(res_as_json["result"]["hotels"])
 
-                    if (potential_hotel) {
+                    if (potential_hotel[0]) {
 
-                        // nResult2.push([i, potential_hotel])  IMPOPRTANT DONT DELETE
+                        // nResult2.push([i, potential_hotel])  // IMPOPRTANT DONT DELETE
 
 
-                        console.log(i, potential_hotel)
-                        // var counter = 0;
+                        // console.log(i, potential_hotel);
 
                         var count_list = [0, 0];
                         if(potential_hotel.length > 1) {
@@ -406,16 +406,34 @@ for (var i = 0; i < arr.length - 1; i++) {
                                         count_list[1] = index;
                                     }
                                     
+                                }else{
+                                    console.log('---------')
+                                    console.log('Perfect match! The element is: ', i, res_as_json["result"]["hotels"][index])
+                                    console.log('Out of posibles ', res_as_json["result"]["hotels"]);
+                                    console.log('---------')
+                                    return nResult2.push([i, res_as_json["result"]["hotels"][index]])
                                 }
 
                             })
                             // console.log('Similarities ', similarity(title_text, potential_hotel[0]['name']) );
                         }else if(potential_hotel.length === 1){
-                            console.log('There is only one item to compare. Must match.', potential_hotel[0])
+                            console.log('---------')
+                            console.log('There is only one item to compare. Must match. The element is',i, res_as_json["result"]["hotels"][0])
+                            console.log('Out of posibles ', res_as_json["result"]["hotels"]);
+                            console.log('---------')
+                            // return nResult2.push([i, res_as_json["result"]["hotels"][0]])
+                            return nResult2.push([i, res_as_json["result"]["hotels"][0]])
+
                         }else if(potential_hotel.length < 1){
                             console.log("There is no hotel ID for this element.")
+                            
                         }
-                        console.log('The count_list is ', count_list, ' and the element is ', i)
+                        // console.log('---------')
+                        // console.log('The element is ',i, res_as_json["result"]["hotels"][count_list[1]])
+                        // // return nResult2.push([i, res_as_json["result"]["hotels"][count_list[1]]])
+                        // console.log('Out of posibles ', res_as_json["result"]["hotels"]);
+                        // console.log('---------')
+                        // return nResult2.push([i, res_as_json["result"]["hotels"][count_list[1]]
                     }
 
 
