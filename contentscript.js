@@ -415,7 +415,7 @@ for (var i = 0; i < arr.length - 1; i++) {
                         }else if(potential_hotel.length < 1){
                             console.log("There is no hotel ID for this element.")
                         }
-                        // console.log('The count_list is ', count_list, ' and the element is ', i)
+                        console.log('The count_list is ', count_list, ' and the element is ', i)
                     }
 
 
