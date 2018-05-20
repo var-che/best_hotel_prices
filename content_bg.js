@@ -1,26 +1,80 @@
-var url_string = window.location.href;
-var newUrlString = url_string.replace(/;/g, '&');
-var url = new URL(newUrlString);
+function parse_query_string(query) {
+    var vars = query.split("&");
+    var query_string = {};
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        var key = decodeURIComponent(pair[0]);
+        var value = decodeURIComponent(pair[1]);
+        // If first entry with this name
+        if (typeof query_string[key] === "undefined") {
+            query_string[key] = decodeURIComponent(value);
+            // If second entry with this name
+        } else if (typeof query_string[key] === "string") {
+            var arr = [query_string[key], decodeURIComponent(value)];
+            query_string[key] = arr;
+            // If third or later entry with this name
+        } else {
+            query_string[key].push(decodeURIComponent(value));
+        }
+    }
+    return query_string;
+}
 
-
-var checkout_month = url.searchParams.get("checkout_month");
-var checkout_monthday = url.searchParams.get("checkout_monthday");
-var checkout_year = url.searchParams.get("checkout_year");
+console.log("Pre content script")
+var query_string = window.location.search.substring(1);
+var parsed_qs = parse_query_string(query_string);
+console.log(parsed_qs.checkin_month);
+var checkout_month = parsed_qs.checkin_month;
+var checkout_monthday = parsed_qs.checkout_monthday;
+var checkout_year = parsed_qs.checkout_year;
 
 checkout = checkout_year + '-' + checkout_month + '-' + checkout_monthday;
+
+///////
+
+var group_adults = parsed_qs.group_adults
+var group_children = parsed_qs.group_children
+var no_rooms = parsed_qs.no_rooms
+
 ////////
 
-var group_adults = url.searchParams.get("group_adults");
-var group_children = url.searchParams.get("group_children");
-var no_rooms = url.searchParams.get("no_rooms");
-
-var checkin_month = url.searchParams.get("checkin_month");
-var checkin_monthday = url.searchParams.get("checkin_monthday");
-var checkin_year = url.searchParams.get("checkin_year");
+var checkin_month = parsed_qs.checkin_month
+var checkin_monthday = parsed_qs.checkin_monthday
+var checkin_year = parsed_qs.checkin_year
 
 checkin = checkin_year + '-' + checkin_month + '-' + checkin_monthday;
+
+///////
+
+console.log('Content from BG.')
+
+
+// var url_string = window.location.href;
+// var newUrlString = url_string.replace(/;/g, '&');
+// var url = new URL(newUrlString);
+
+
+// var checkout_month = url.searchParams.get("checkout_month");
+// var checkout_monthday = url.searchParams.get("checkout_monthday");
+// var checkout_year = url.searchParams.get("checkout_year");
+
+// checkout = checkout_year + '-' + checkout_month + '-' + checkout_monthday;
+// ////////
+
+// var group_adults = url.searchParams.get("group_adults");
+// var group_children = url.searchParams.get("group_children");
+// var no_rooms = url.searchParams.get("no_rooms");
+
+// var checkin_month = url.searchParams.get("checkin_month");
+// var checkin_monthday = url.searchParams.get("checkin_monthday");
+// var checkin_year = url.searchParams.get("checkin_year");
+
+// checkin = checkin_year + '-' + checkin_month + '-' + checkin_monthday;
 //////////
 
+
+
+////////
 currency = document.querySelector('input[name="selected_currency"]').value;
 
 var data = {};
