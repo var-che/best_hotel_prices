@@ -18,12 +18,7 @@
     "48" : "sample-48.png",
     "128" : "sample-128.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["*://www.booking.com/*"],
-      "js" : ["contentscript4.js"]
-    }
-  ],
+
   "background": {
     "scripts": ["background.js"]
   }

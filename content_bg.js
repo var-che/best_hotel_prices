@@ -607,12 +607,14 @@ function drawTheDivContainer(html_index, the_object){
     /* This is the main wrapper that wrapps the whole ad */
     e = document.getElementsByClassName('sr-hotel__name')[html_index];
     main_wrapper = e.offsetParent.offsetParent.offsetParent.offsetParent;
+    main_wrapper.setAttribute('style', 'position: relative');
     
 
     div = document.createElement('DIV');
+    div.setAttribute('style', 'position: absolute;bottom: 0;left:0; z-index: 999;' )
     div.innerHTML = `<div class='--main-wrapper'>
 
-                     </div>`;
+                     </div>`;                     
     main_wrapper.appendChild(div);
 
     /* add insides to hotel id */
