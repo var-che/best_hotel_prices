@@ -21,9 +21,11 @@ function parse_query_string(query) {
 }
 
 console.log("Pre content script")
+
 var query_string = window.location.search.substring(1);
+query_string = query_string.replace(/;/g, '&');
 var parsed_qs = parse_query_string(query_string);
-console.log(parsed_qs.checkin_month);
+console.log('To examine ',query_string);
 var checkout_month = parsed_qs.checkin_month;
 var checkout_monthday = parsed_qs.checkout_monthday;
 var checkout_year = parsed_qs.checkout_year;
@@ -626,8 +628,10 @@ function drawTheDivContainer(html_index, the_object){
     p.innerText = currency;
     div.appendChild(p);
 
-    // hotel_id = document.getElementById('--hotel-id');
-    // hotel_id.innerText = the_object['id'];
+    p = document.createElement('BUTTON');
+    p.innerText = "ORDER";
+    div.appendChild(p);
+    
 }
 
 function logThePageConfiguration(thing){
