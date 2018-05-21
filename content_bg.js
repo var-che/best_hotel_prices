@@ -634,7 +634,15 @@ function drawTheDivContainer(html_index, the_object){
     p.innerText = "ORDER";
     div.appendChild(p);
     
+    p.addEventListener('click', (click_event)=>{
+        console.log(the_object['rates'][0]['hotelpage'])
+        var redirectWindow = window.open(the_object['rates'][0]['hotelpage'], '_blank');
+    redirectWindow.location;
+    });
+ 
 }
+
+
 
 function logThePageConfiguration(thing){
     console.log('--------------------------*****')
@@ -649,4 +657,3 @@ nResult2.push = function () {
     Array.prototype.push.apply(this, arguments);
     processQ();
 };
-
