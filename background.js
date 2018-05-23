@@ -92,4 +92,33 @@
         }
         tabStorage[tabId] = null;
     });
+
+    /* the listening mechanism from content script */
+    
+    var data;
+    chrome.runtime.onMessage.addListener(
+        function (request, sender, sendResponse) {
+            console.log(sender.tab ?
+                "from a content script:" + sender.tab.url :
+                "from the extension");
+            if (request.greeting1){
+
+                data = request.greeting1;
+                // chrome.tabs.create({"url": 'pages/activitiy-details.html'});
+                    sendResponse({
+                        farewell: "goodbye"
+                    });
+
+                chrome.tabs.create({
+                    "url": chrome.extension.getURL('pages/hotel-details.html')
+                }, function (tab1) {
+
+                    chrome.tabs.sendMessage(tab1.id, {
+                        "action": "setBackground"
+                    });
+                });
+            } else if(request.greeting === "yo"){
+                sendResponse({fag: data})
+            }
+        });
 }());

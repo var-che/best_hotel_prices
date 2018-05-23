@@ -4,7 +4,8 @@
   "manifest_version": 2,
   "description": "Demonstrates making cross domain requests from a content script by putting Twitter trends on Google News.",
   "web_accessible_resources": [
-    "content_bg.js"
+    "content_bg.js",
+    "pages/hotel-details.html"
   ],
 
   "permissions": [
@@ -12,7 +13,8 @@
     "webRequest",
     "*://www.booking.com/*",
     "*://partner.ostrovok.ru/*",
-    "tabs"
+    "tabs",
+    "activeTab"
   ],
   "icons": {
     "48" : "sample-48.png",

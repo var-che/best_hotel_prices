@@ -412,8 +412,6 @@ for (var i = 0; i < arr.length - 1; i++) {
     title_element = arr[i]; // the title as a element
     title_text = title_element.innerText; // the title as a text
     (function (i, title_element, title_text) {
-        // URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + ' ' + encodeURIComponent(city_name) + '","format":"json","lang":"en"}';
-
 
         URL = 'https://partner.ostrovok.ru/api/b2b/v2/multicomplete?data={"query":"' + encodeURIComponent(title_text) + '","format":"json","lang":"en"}';
 
@@ -576,7 +574,7 @@ function makeSecondAPIcall(ids){
 
                     console.log(result_to_json)
                     logThePageConfiguration(result_to_json['debug']);
-                    logTheListOfElements(result_to_json['result']['hotels']);
+                    logTheListOfElements(result_to_json['result']['hotels'], result_to_json['debug']);
                 }
             }
         }
@@ -586,14 +584,14 @@ function makeSecondAPIcall(ids){
     
 }
 
-function logTheListOfElements(list_of_hotels_objects){
+function logTheListOfElements(list_of_hotels_objects, debug){
     html_index_and_object = []
 
     list_of_hotels_objects.forEach((elem)=>{
         for(var i = 0; i < nResult2.length-1; i++){
             if(elem['id'] === nResult2[i][1]['id']){
                 // html_index_and_object.push([nResult2[i][0], elem])
-                drawTheDivContainer(nResult2[i][0], elem);
+                drawTheDivContainer(nResult2[i][0], elem, debug);
             }
         }
     });
@@ -601,7 +599,7 @@ function logTheListOfElements(list_of_hotels_objects){
     
 }
 
-function drawTheDivContainer(html_index, the_object){
+function drawTheDivContainer(html_index, the_object, debug){
 
     console.log('Creating div for ', html_index, the_object)
     /* This is the main wrapper that wrapps the whole ad */
@@ -635,9 +633,13 @@ function drawTheDivContainer(html_index, the_object){
     div.appendChild(p);
     
     p.addEventListener('click', (click_event)=>{
-        console.log(the_object['rates'][0]['hotelpage'])
-        var redirectWindow = window.open(the_object['rates'][0]['hotelpage'], '_blank');
-    redirectWindow.location;
+        the_object.debugg = debug;
+        console.log("The important object", the_object)
+        chrome.runtime.sendMessage({
+            greeting1: the_object
+        }, function (response) {
+            console.log(response.farewell);
+        });
     });
  
 }
