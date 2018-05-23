@@ -339,22 +339,22 @@ function changeHeaders(hotel_object){
   hotel_votes.innerText = `based on ${num_of_votes} reviews!`;
 
   /* Smilies */
-//   hotel_detailed = hotel_object['rating']['detailed']
-//   hotel_smilies = document.getElementsByClassName('list booking-item-raiting-summary-list')[0];
+  hotel_detailed = hotel_object['rating']['detailed']
+  hotel_smilies = document.getElementsByClassName('list booking-item-raiting-summary-list')[0];
 
-//   var iterator = 0;
-//   for(key in hotel_detailed){
-//     star_html_total = '';
-//     for(var i = 0; i< hotel_detailed[key]; i++){
-//         star_html = '<i class="fa fa-smile-o"></i>';
+  var iterator = 0;
+  for(key in hotel_detailed){
+    star_html_total = '';
+    for(var i = 0; i< hotel_detailed[key]; i++){
+        star_html = '<i class="fa fa-smile-o"></i>';
 
-//         star_html_total = star_html + star_html_total;
-//     }
+        star_html_total = star_html + star_html_total;
+    }
 
-//     hotel_smilies.children[iterator].children[1].innerHTML = star_html_total;
-//     star_html_total = '';
-//     iterator++;
-//   }
+    hotel_smilies.children[iterator].children[1].innerHTML = star_html_total;
+    star_html_total = '';
+    iterator++;
+  }
   
 }
 
@@ -363,7 +363,7 @@ function getRooms(the_object) {
     /* https://partner.ostrovok.ru/api/b2b/v2/hotelpage/britannia_hotel__manchester_city_centre
     ?data={"checkin":"2018-06-01","checkout":"2018-06-04","adults":2,"lang":"en","format":"json","currency":"usd"} */
     URL = `https://partner.ostrovok.ru/api/b2b/v2/hotelpage/${the_object.id}?data={"checkin":"${debug.checkin}","checkout":"${debug.checkout}","adults":${debug.adults},"lang":"${debug.lang}","format":"json","currency":"${debug.currency}"}`;
-    console.log('The url is ', URL)
+    console.log('The API request:  ', URL)
     let xml = new XMLHttpRequest();
     //AUTH 
     var auth = make_base_auth('1446', '0eae4a4e-40d5-4de4-957c-670cb7904e2a');
@@ -398,8 +398,12 @@ function listTheRooms(room_object){
 
     console.log('Example room for this hotel')
     rates = room_object['rates']
+    console.log(rates)
 
-
+    /* Change the main price */
+    main_price = document.getElementsByClassName('text-lg')[0];
+    main_price.innerText =  rates[0]['rate_currency'] + ' ' + rates[0]['daily_prices'][0];
+    
 
     for(key in rates){
         console.log('----------------------')
